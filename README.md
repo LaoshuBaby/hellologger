@@ -1,0 +1,5 @@
+# HelloLogger
+
+HelloLogger是一个基于Loguru的同时向多个来源投送日志的日志框架，便于快速配置和接入Aliyun、AWS等SaaS；快速投递到ClickHouse、ElasticSearch、GreptimeDB、MongoDB等时序数据库或文档数据库；快速投递到Syslog或调用WebHook
+
+希望这个日志库能帮助您解决复杂项目中留痕和云观测的难题。
