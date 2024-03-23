@@ -4,10 +4,20 @@ import logging.config
 
 import loguru
 
-LOG_PATH = "YOUR_HOME"
+from .const import *
 
 
-def get_logger(log_path: str, log_target: dict, **log_config):
+def get_variable(key=None, default=None):
+    if key != None and isinstance(key, str):
+        if os.environ.get(key, None):
+            return os.environ.get(key, None)
+    elif default != None and isinstance(default, str):
+        return default
+    else:
+        return None
+
+
+def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
     """
     log_target: 是否启用不同的数据源
     不同数据源会使用对应的数据驱动
@@ -27,13 +37,23 @@ def get_logger(log_path: str, log_target: dict, **log_config):
         "handlers": {
             "sls_handler": {
                 "()": "aliyun.log.QueuedLogHandler",
-                "level": "INFO",
+                "level": log_level.get("aliyun", "INFO"),
                 "formatter": "rawformatter",
-                "end_point": "cn-qingdao.log.aliyuncs.com",
-                "access_key_id": os.environ.get("ALIYUN_ACCESSKEY_ID"),
-                "access_key": os.environ.get("ALIYUN_ACCESSKEY_SECRET"),
-                "project": "yuhenglog",
-                "log_store": "dev",
+                "end_point": get_variable(default=LOG_CONFIG_ALIYUN_ENDPOINT),
+                "access_key_id": get_variable(
+                    key="ALIYUN_ACCESSKEY_ID",
+                    default=LOG_CONFIG_ALIYUN_ACCESSKEY_ID,
+                ),
+                "access_key": get_variable(
+                    key="ALIYUN_ACCESSKEY_SECRET",
+                    default=LOG_CONFIG_ALIYUN_ACCESSKEY_SECRET,
+                ),
+                "project": get_variable(
+                    default=LOG_CONFIG_ALIYUN_PROJECT,
+                ),
+                "log_store": get_variable(
+                    default=LOG_CONFIG_ALIYUN_LOGSTORE,
+                ),
             }
         },
         "loggers": {
@@ -41,7 +61,7 @@ def get_logger(log_path: str, log_target: dict, **log_config):
                 "handlers": [
                     "sls_handler",
                 ],
-                "level": "INFO",
+                "level": log_level.get("aliyun", "INFO"),
                 "propagate": False,
             }
         },
@@ -64,7 +84,7 @@ def get_logger(log_path: str, log_target: dict, **log_config):
         sink=os.path.join(log_path, "log", "log_{time}.log"),
         format=loguru_format,
         level="TRACE",
-        **loguru_config
+        **loguru_config,
     )
     # saas_aliyun_sls
     if log_target.get("aliyun", False):
@@ -72,7 +92,7 @@ def get_logger(log_path: str, log_target: dict, **log_config):
             sink=logging_handler_aliyun,
             format=loguru_format,
             level="INFO",
-            **loguru_config
+            **loguru_config,
         )
     # saas_aws_cloudwatch
     # logger.add(sink=logging_handler_aws) # WIP
@@ -86,9 +106,12 @@ def get_logger(log_path: str, log_target: dict, **log_config):
     # # discord/slack/telegram_bot, using loguru-discord  webhook需要传入配置文件，没有就默认discord的
 
     def get_logger_status() -> str:
-        return ""
+        logger_status = []
+        for device, status in log_config.items():
+            logger_status.append(f"{device}-{status}")
+        return "\n".join(logger_status)
 
-    logger.success("hellologger enabled" + get_logger_status())
+    logger.success("hellologger enabled" + "\n" + get_logger_status())
     return logger
 
 
