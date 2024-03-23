@@ -7,7 +7,15 @@ import loguru
 LOG_PATH = "YOUR_HOME"
 
 
-def get_logger(log_path: str, log_target:dict):
+def get_logger(log_path: str, log_target: dict, **log_config):
+    """
+    log_target: 是否启用不同的数据源
+    不同数据源会使用对应的数据驱动
+    代号可见如下：
+    * local
+    * aliyun
+    * aws
+    """
     logging_config = {
         "version": 1,
         "formatters": {
@@ -48,10 +56,8 @@ def get_logger(log_path: str, log_target:dict):
     # for pytest project may need to record logs write by framework
     # pytest-loguru
 
-
-
-    if log_path==None or isinstance(log_path, str)==False:
-        log_path=LOG_PATH
+    if log_path == None or isinstance(log_path, str) == False:
+        log_path = LOG_PATH
 
     # local-file
     logger.add(
@@ -61,7 +67,7 @@ def get_logger(log_path: str, log_target:dict):
         **loguru_config
     )
     # saas_aliyun_sls
-    if log_target.get("aliyun",False):
+    if log_target.get("aliyun", False):
         logger.add(
             sink=logging_handler_aliyun,
             format=loguru_format,
@@ -77,16 +83,18 @@ def get_logger(log_path: str, log_target:dict):
     # syslog stream
     # # Read https://docs.render.com/log-streams#sumo-logic
     # webhook
-    # # discord/slack/telegram_bot, using loguru-discord
-        
-    def get_logger_status()->str:
+    # # discord/slack/telegram_bot, using loguru-discord  webhook需要传入配置文件，没有就默认discord的
+
+    def get_logger_status() -> str:
         return ""
 
-    logger.success("hellologger enabled"+get_logger_status())
+    logger.success("hellologger enabled" + get_logger_status())
     return logger
+
 
 def main():
     print("Sorry, this package is not intended to run directly.")
+
 
 if __name__ == "__main__":
     main()
