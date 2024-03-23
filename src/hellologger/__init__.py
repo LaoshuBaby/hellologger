@@ -37,7 +37,7 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
             }
         },
         "handlers": {
-            "sls_handler": {
+            "aliyun_sls_python_sdk": {
                 "()": "aliyun.log.QueuedLogHandler",
                 "level": log_level.get("aliyun", "INFO"),
                 "formatter": "rawformatter",
@@ -64,9 +64,9 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
             }
         },
         "loggers": {
-            "sls": {
+            "aliyun_sls": {
                 "handlers": [
-                    "sls_handler",
+                    "aliyun_sls_python_sdk",
                 ],
                 "level": log_level.get("aliyun", "INFO"),
                 "propagate": False,
@@ -74,7 +74,7 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
         },
     }
     logging.config.dictConfig(logging_config)
-    logging_handler_aliyun = logging.getLogger("sls").handlers[0]
+    logging_handler_aliyun = logging.getLogger("aliyun_sls").handlers[0]
 
     loguru_config = {}
     loguru_format = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}"
@@ -86,7 +86,7 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
     if log_path == None or isinstance(log_path, str) == False:
         log_path = LOG_PATH
 
-    # local-file
+    # local_file
     logger.add(
         sink=os.path.join(log_path, "log", "log_{time}.log"),
         format=loguru_format,
@@ -103,14 +103,14 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
         )
     # saas_aws_cloudwatch
     # logger.add(sink=logging_handler_aws) # WIP
-    # clickhouse
+    # db_clickhouse
     # logger.add(sink=logging_handler_clickhouse) # WIP
-    # elasticsearch
+    # db_elasticsearch
     # logger.add(sink=logging_handler_elasticsearch) # WIP
-    # syslog stream
-    # # Read https://docs.render.com/log-streams#sumo-logic
-    # webhook
-    # # discord/slack/telegram_bot, using loguru-discord  webhook需要传入配置文件，没有就默认discord的
+    # protocal_syslog
+    # logger.add(sink=logging_handler_syslog) # WIP
+    # protocal_webhook
+    # logger.add(sink=logging_handler_webhook) # WIP
 
     def get_plain_dict(
         logger_status_name: str, logger_status_dict: dict
