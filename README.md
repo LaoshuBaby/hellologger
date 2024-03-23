@@ -96,9 +96,9 @@ pip install aliyun-log-python-sdk
 **WIP**
 
 计划支持包括但不仅限于如下平台的WebHook模板：
-* Discord
+* Discord (官方文档：[配置](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)、[参数](https://discord.com/developers/docs/resources/webhook))
 * Slack
-* Telegram
+* Telegram (官方文档：[botfather](https://core.telegram.org/bots)、[例程](https://gitlab.com/Athamaxy/telegram-bot-tutorial/-/blob/main/TutorialBot.py))
 
 其中，Discord平台计划提供两个数据驱动，一个依赖loguru-discord，一个仍调用restful api
 
