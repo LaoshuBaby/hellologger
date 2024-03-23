@@ -11,6 +11,8 @@ def get_variable(key=None, default=None):
     if key != None and isinstance(key, str):
         if os.environ.get(key, None):
             return os.environ.get(key, None)
+        else:
+            return key
     elif default != None and isinstance(default, str):
         return default
     else:
@@ -39,7 +41,10 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
                 "()": "aliyun.log.QueuedLogHandler",
                 "level": log_level.get("aliyun", "INFO"),
                 "formatter": "rawformatter",
-                "end_point": get_variable(default=LOG_CONFIG_ALIYUN_ENDPOINT),
+                "end_point": get_variable(
+                    key=log_config.get("LOG_CONFIG_ALIYUN_ENDPOINT", None),
+                    default=LOG_CONFIG_ALIYUN_ENDPOINT,
+                ),
                 "access_key_id": get_variable(
                     key="ALIYUN_ACCESSKEY_ID",
                     default=LOG_CONFIG_ALIYUN_ACCESSKEY_ID,
@@ -49,9 +54,11 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
                     default=LOG_CONFIG_ALIYUN_ACCESSKEY_SECRET,
                 ),
                 "project": get_variable(
+                    key=log_config.get("LOG_CONFIG_ALIYUN_PROJECT", None),
                     default=LOG_CONFIG_ALIYUN_PROJECT,
                 ),
                 "log_store": get_variable(
+                    key=log_config.get("LOG_CONFIG_ALIYUN_LOGSTORE", None),
                     default=LOG_CONFIG_ALIYUN_LOGSTORE,
                 ),
             }
@@ -91,7 +98,7 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
         logger.add(
             sink=logging_handler_aliyun,
             format=loguru_format,
-            level="INFO",
+            level=log_level.get("aliyun", "INFO"),
             **loguru_config,
         )
     # saas_aws_cloudwatch
@@ -105,13 +112,25 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
     # webhook
     # # discord/slack/telegram_bot, using loguru-discord  webhook需要传入配置文件，没有就默认discord的
 
-    def get_logger_status() -> str:
-        logger_status = []
-        for device, status in log_config.items():
-            logger_status.append(f"{device}-{status}")
-        return "\n".join(logger_status)
+    def get_plain_dict(
+        logger_status_name: str, logger_status_dict: dict
+    ) -> str:
+        plain_dict = []
+        for key, value in logger_status_dict.items():
+            plain_dict.append(f"{logger_status_name}.{key}: {value}")
+        return "\n".join(plain_dict)
 
-    logger.success("hellologger enabled" + "\n" + get_logger_status())
+    fence_length = 30
+    logger.success(
+        "\n"
+        + ("=" * fence_length + "\n")
+        + ("[Hellologger] logger enabled" + "\n")
+        + ("=" * fence_length + "\n")
+        + (get_plain_dict("log_target", log_target) + "\n")
+        + (get_plain_dict("log_level", log_level) + "\n")
+        + (get_plain_dict("log_config", log_config) + "\n")
+        + ("=" * fence_length + "\n")
+    )
     return logger
 
 
