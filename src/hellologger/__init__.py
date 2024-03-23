@@ -7,7 +7,7 @@ import loguru
 LOG_PATH = "YOUR_HOME"
 
 
-def get_logger(LOG_PATH: str) -> loguru.Logger:
+def get_logger(log_path: str, log_target:dict):
     logging_config = {
         "version": 1,
         "formatters": {
@@ -48,18 +48,20 @@ def get_logger(LOG_PATH: str) -> loguru.Logger:
     # for pytest project may need to record logs write by framework
     # pytest-loguru
 
-    flag_local = True
-    flag_aliyun = True
+
+
+    if log_path==None or isinstance(log_path, str)==False:
+        log_path=LOG_PATH
 
     # local-file
     logger.add(
-        sink=os.path.join(LOG_PATH, "log", "log_{time}.log"),
+        sink=os.path.join(log_path, "log", "log_{time}.log"),
         format=loguru_format,
         level="TRACE",
         **loguru_config
     )
     # saas_aliyun_sls
-    if flag_aliyun:
+    if log_target.get("aliyun",False):
         logger.add(
             sink=logging_handler_aliyun,
             format=loguru_format,
@@ -76,8 +78,11 @@ def get_logger(LOG_PATH: str) -> loguru.Logger:
     # # Read https://docs.render.com/log-streams#sumo-logic
     # webhook
     # # discord/slack/telegram_bot, using loguru-discord
+        
+    def get_logger_status()->str:
+        return ""
 
-    logger.info("hellologger enabled")
+    logger.success("hellologger enabled"+get_logger_status())
     return logger
 
 def main():

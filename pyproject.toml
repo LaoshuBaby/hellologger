@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hellologger"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["快乐的老鼠宝宝 <laoshubaby@protonmail.com>"]
 license = "MIT"
