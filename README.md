@@ -122,3 +122,9 @@ hellologger.log(level:str,message:str,device:str)
 
 引用hellologger从此一身轻！
 
+## 杂谈
+
+Q：为什么要叫这个名字？
+
+A：因为当时想了很多，包括什么logcat、magiclog等。然后在路过的招牌的塑料袋上看到一个hello，干脆就叫hellologger了，因为无论如何都要体现出log嘛。之后就去搜有没有撞车知名项目，然后只发现了[soongoo/HelloLogger](https://github.com/soongoo/HelloLogger)和[larse514/HelloLogger](https://github.com/larse514/HelloLogger)两个项目，都已经看起来停止维护了，就开工了！
+
