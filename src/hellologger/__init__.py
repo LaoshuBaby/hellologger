@@ -19,7 +19,9 @@ def get_variable(key=None, default=None):
         return None
 
 
-def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
+def get_logger(
+    log_path: str, log_file: str, log_target: dict, log_level={}, **log_config
+):
     """
     log_target: 是否启用不同的数据源
     不同数据源会使用对应的数据驱动
@@ -88,7 +90,7 @@ def get_logger(log_path: str, log_target: dict, log_level={}, **log_config):
 
     # local_file
     logger.add(
-        sink=os.path.join(log_path, "log", "log_{time}.log"),
+        sink=os.path.join(log_path, log_file),
         format=loguru_format,
         level="TRACE",
         **loguru_config,
