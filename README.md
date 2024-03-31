@@ -69,6 +69,8 @@ pip install aliyun-log-python-sdk
 2. 请确保您提供的AccessKey具有SLS的写权限。您可以在RAM中进行权限管理。
 3. 即使开通了SLS服务，并创建了一个项目，创建了一个logstore，也必须手动在logstor管理界面进行一次“数据接入”操作，才算实质性开通，否则不允许从python-sdk上传日志。
 
+警告：**该数据驱动依赖的包protobuf锁定在较为久远的版本，易与本地其他包依赖的protobuf冲突。建议如果必须采用，可使用如`pip install protobuf==3.20.3`来强制指定版本。**
+
 ### `saas_aws_cloudwatch` (**`aws`**)
 
 **WIP**
