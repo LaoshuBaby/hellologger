@@ -30,53 +30,58 @@ def get_logger(
     * aliyun
     * aws
     """
-    logging_config = {
-        "version": 1,
-        "formatters": {
-            "rawformatter": {
-                "class": "logging.Formatter",
-                "format": "%(message)s",
-            }
-        },
-        "handlers": {
-            "aliyun_sls_python_sdk": {
-                "()": "aliyun.log.QueuedLogHandler",
-                "level": log_level.get("aliyun", "INFO"),
-                "formatter": "rawformatter",
-                "end_point": get_variable(
-                    key=log_config.get("LOG_CONFIG_ALIYUN_ENDPOINT", None),
-                    default=LOG_CONFIG_ALIYUN_ENDPOINT,
-                ),
-                "access_key_id": get_variable(
-                    key="ALIYUN_ACCESSKEY_ID",
-                    default=LOG_CONFIG_ALIYUN_ACCESSKEY_ID,
-                ),
-                "access_key": get_variable(
-                    key="ALIYUN_ACCESSKEY_SECRET",
-                    default=LOG_CONFIG_ALIYUN_ACCESSKEY_SECRET,
-                ),
-                "project": get_variable(
-                    key=log_config.get("LOG_CONFIG_ALIYUN_PROJECT", None),
-                    default=LOG_CONFIG_ALIYUN_PROJECT,
-                ),
-                "log_store": get_variable(
-                    key=log_config.get("LOG_CONFIG_ALIYUN_LOGSTORE", None),
-                    default=LOG_CONFIG_ALIYUN_LOGSTORE,
-                ),
-            }
-        },
-        "loggers": {
-            "aliyun_sls": {
-                "handlers": [
-                    "aliyun_sls_python_sdk",
-                ],
-                "level": log_level.get("aliyun", "INFO"),
-                "propagate": False,
-            }
-        },
-    }
-    logging.config.dictConfig(logging_config)
-    logging_handler_aliyun = logging.getLogger("aliyun_sls").handlers[0]
+    if (
+        log_target.get("aliyun", False)
+        or log_target.get("aws", False)
+        or log_target.get("webhook", False)
+    ):
+        logging_config = {
+            "version": 1,
+            "formatters": {
+                "rawformatter": {
+                    "class": "logging.Formatter",
+                    "format": "%(message)s",
+                }
+            },
+            "handlers": {
+                "aliyun_sls_python_sdk": {
+                    "()": "aliyun.log.QueuedLogHandler",
+                    "level": log_level.get("aliyun", "INFO"),
+                    "formatter": "rawformatter",
+                    "end_point": get_variable(
+                        key=log_config.get("LOG_CONFIG_ALIYUN_ENDPOINT", None),
+                        default=LOG_CONFIG_ALIYUN_ENDPOINT,
+                    ),
+                    "access_key_id": get_variable(
+                        key="ALIYUN_ACCESSKEY_ID",
+                        default=LOG_CONFIG_ALIYUN_ACCESSKEY_ID,
+                    ),
+                    "access_key": get_variable(
+                        key="ALIYUN_ACCESSKEY_SECRET",
+                        default=LOG_CONFIG_ALIYUN_ACCESSKEY_SECRET,
+                    ),
+                    "project": get_variable(
+                        key=log_config.get("LOG_CONFIG_ALIYUN_PROJECT", None),
+                        default=LOG_CONFIG_ALIYUN_PROJECT,
+                    ),
+                    "log_store": get_variable(
+                        key=log_config.get("LOG_CONFIG_ALIYUN_LOGSTORE", None),
+                        default=LOG_CONFIG_ALIYUN_LOGSTORE,
+                    ),
+                }
+            },
+            "loggers": {
+                "aliyun_sls": {
+                    "handlers": [
+                        "aliyun_sls_python_sdk",
+                    ],
+                    "level": log_level.get("aliyun", "INFO"),
+                    "propagate": False,
+                }
+            },
+        }
+        logging.config.dictConfig(logging_config)
+        logging_handler_aliyun = logging.getLogger("aliyun_sls").handlers[0]
 
     loguru_config = {}
     loguru_format = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}"
