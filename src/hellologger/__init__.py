@@ -1,4 +1,5 @@
 import os
+import platform
 
 import logging.config
 
@@ -128,13 +129,12 @@ def get_logger(
         return "\n".join(plain_dict)
 
     def get_platform() -> None:
-        import platform
-
         result = {}
         try:
             result["system"] = platform.system()
             result["architecture"] = platform.architecture()
             result["machine"] = platform.machine()
+            result["node"] = platform.node()
             result["platform"] = platform.platform()
             result["processor"] = platform.processor()
             result["python_implementation"] = platform.python_implementation()
@@ -152,10 +152,20 @@ def get_logger(
         + ("=" * fence_length + "\n")
         + ("[Hellologger] logger enabled" + "\n")
         + ("=" * fence_length + "\n")
-        + (get_plain_dict("platform", get_platform()) + "\n")
+        + (f"platform.platform: {platform.platform()}" + "\n")
+        + (
+            f"platform.python_implementation: {platform.python_implementation()}"
+            + "\n"
+        )
+        + (f"platform.python_version: {platform.python_version()}" + "\n")
         + (get_plain_dict("log_target", log_target) + "\n")
         + (get_plain_dict("log_level", log_level) + "\n")
         + (get_plain_dict("log_config", log_config) + "\n")
+        + ("=" * fence_length + "\n")
+    )
+    logger.trace(
+        "\n"
+        + (get_plain_dict("platform", get_platform()) + "\n")
         + ("=" * fence_length + "\n")
     )
     return logger
