@@ -127,12 +127,32 @@ def get_logger(
             plain_dict.append(f"{logger_status_name}.{key}: {value}")
         return "\n".join(plain_dict)
 
+    def get_platform() -> None:
+        import platform
+
+        result = {}
+        try:
+            result["system"] = platform.system()
+            result["architecture"] = platform.architecture()
+            result["machine"] = platform.machine()
+            result["platform"] = platform.platform()
+            result["processor"] = platform.processor()
+            result["python_implementation"] = platform.python_implementation()
+            result["python_version"] = platform.python_version()
+            result["python_build"] = platform.python_build()
+            result["python_compiler"] = platform.python_compiler()
+
+        except Exception:
+            result["warning"] = "Failed to fetch"
+        return result
+
     fence_length = 30
     logger.success(
         "\n"
         + ("=" * fence_length + "\n")
         + ("[Hellologger] logger enabled" + "\n")
         + ("=" * fence_length + "\n")
+        + (get_plain_dict("platform", get_platform()) + "\n")
         + (get_plain_dict("log_target", log_target) + "\n")
         + (get_plain_dict("log_level", log_level) + "\n")
         + (get_plain_dict("log_config", log_config) + "\n")
