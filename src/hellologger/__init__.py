@@ -31,9 +31,9 @@ def get_logger(
     * aws
     """
     if (
-        log_target.get("aliyun", False)
-        or log_target.get("aws", False)
-        or log_target.get("webhook", False)
+        log_target.get("aliyun", True)
+        or log_target.get("aws", True)
+        or log_target.get("webhook", True)
     ):
         logging_config = {
             "version": 1,
@@ -101,7 +101,7 @@ def get_logger(
         **loguru_config,
     )
     # saas_aliyun_sls
-    if log_target.get("aliyun", False):
+    if log_target.get("aliyun", True):
         logger.add(
             sink=logging_handler_aliyun,
             format=loguru_format,
