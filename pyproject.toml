@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hellologger"
-version = "0.2.2"
+version = "__HELLOLOGGER_VERSION__"
 description = ""
 authors = ["快乐的老鼠宝宝 <laoshubaby@protonmail.com>"]
 license = "MIT"
@@ -16,7 +16,6 @@ packages = [{ include = "hellologger", from = "src" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 loguru = "^0.7.2"
-
 
 [build-system]
 requires = ["poetry-core"]

@@ -150,7 +150,7 @@ def get_logger(
     logger.success(
         "\n"
         + ("=" * fence_length + "\n")
-        + ("[Hellologger] logger enabled" + "\n")
+        + (f"[Hellologger {HELLOLOGGER_VERSION}] logger enabled" + "\n")
         + ("=" * fence_length + "\n")
         + (f"platform.platform: {platform.platform()}" + "\n")
         + (
